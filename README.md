@@ -1,6 +1,6 @@
-# ABCD Architecture
+# ABCD Architecture Flutter - An easy & fast way to start your Flutter project
 
-**ABCD Architecture** is a starter Flutter project designed to help you kickstart your app development process with a clean, scalable architecture. The project leverages a Bloc pattern for managing app data, which can be used with any state management solution, such as Provider (used in this project).
+**ABCD Architecture** is a starter Flutter project designed to help you kickstart your app development process with a clean, scalable architecture. The project leverages a Bloc pattern for managing app data, which can be used with any state management solution (Provider is used in this project).
 
 ## Project Structure
 
@@ -28,6 +28,8 @@
 ## Customization
 
 To add or modify data handling, declare your custom data classes in the `data` folder. Then, implement the necessary logic in `FirebaseServiceExtension` or `HiveServiceExtension` depending on whether you need to save data locally or in Firestore.
+
+For screen management, define each screen separately in the `screens` folder. Create components specific to that screen in a subfolder within the screen’s folder. If any component is shared by multiple screens, it’s a good idea to extract it into the `widgets` folder for reusability.
 
 ## Contribution
 

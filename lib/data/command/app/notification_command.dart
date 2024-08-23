@@ -17,7 +17,7 @@ class NotificationCommand {
 
     final token = await FirebaseMessaging.instance.getToken();
 
-    print('hello token: $token');
+    debugPrint('hello token: $token');
   }
 }
 
