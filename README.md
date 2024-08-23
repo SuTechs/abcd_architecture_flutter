@@ -1,4 +1,5 @@
-# ABCD Architecture Flutter - An easy & fast way to start your Flutter project
+# ABCD Architecture Flutter
+### Easy & fast way to start your Flutter project
 
 **ABCD Architecture** is a starter Flutter project designed to help you kickstart your app development process with a clean, scalable architecture. The project leverages a Bloc pattern for managing app data, which can be used with any state management solution (Provider is used in this project).
 
