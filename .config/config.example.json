@@ -1,0 +1,16 @@
+{
+  "supabase_url": "https://your-project.supabase.co",
+  "supabase_anon_key": "your-anon-key",
+  "supabase_google_web_client_id": "your-google-web-client-id.apps.googleusercontent.com",
+  "api_base_url": "https://api.example.com",
+  "admob_android_app_id": "ca-app-pub-xxx",
+  "admob_ios_app_id": "ca-app-pub-xxx",
+  "admob_android_banner_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_ios_banner_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_android_interstitial_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_ios_interstitial_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_android_rewarded_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_ios_rewarded_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_android_native_ad_unit_id": "ca-app-pub-xxx/xxx",
+  "admob_ios_native_ad_unit_id": "ca-app-pub-xxx/xxx"
+}

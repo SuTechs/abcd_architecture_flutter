@@ -8,7 +8,7 @@
 PRODUCT_NAME = abcd_architecture_flutter
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = app.sutechs.abcdArchitectureFlutter
+PRODUCT_BUNDLE_IDENTIFIER = com.sutechs.abcdArchitectureFlutter
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 app.sutechs. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.sutechs. All rights reserved.

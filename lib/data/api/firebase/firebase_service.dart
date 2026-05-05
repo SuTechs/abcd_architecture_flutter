@@ -1,111 +1,137 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
+
+import '../core/base_api_service.dart';
+import '../services/app_logger.dart';
+import 'firebase_init.dart';
 import 'firebase_native.dart';
+import 'repo/firebase_todo_repo.dart';
+import 'repo/firebase_user_repo.dart';
 
-// CollectionKeys
-class FireIds {
-  static const user = "User";
-}
+/// Firebase implementation of [BaseApiService].
+///
+/// Core auth & storage live here. Feature repos are mixed in:
+///   - [FirebaseUserRepo] — user CRUD
+///   - [FirebaseTodoRepo] — todo CRUD
+///
+/// To add a new feature, create `repo/firebase_xyz_repo.dart` and mix it in.
+class FirebaseService extends BaseApiService
+    with FirebaseUserRepo, FirebaseTodoRepo {
+  late final FirebaseNative _native;
 
-class FirebaseFactory {
-  static bool _initComplete = false;
+  /// Exposed for repo mixins to access raw Firebase operations.
+  @override
+  FirebaseNative get native => _native;
 
-  static Future<FirebaseService> create() async {
-    final FirebaseService service = NativeFirebaseService();
-    if (_initComplete == false) {
-      await service.init();
-      _initComplete = true;
+  @override
+  Future<void> init() async {
+    final initialized = await FirebaseInit.initialize();
+    if (!initialized) {
+      throw StateError('Firebase failed to initialize.');
     }
-    return service;
+    _native = FirebaseNative();
   }
-}
 
-// Interface / Base class
-// Combination of abstract methods that must be implemented, and concrete methods that are shared.
-abstract class FirebaseService {
-  /// /////////////////////////////////////////////////
-  /// Concrete Methods
-  /// //////////////////////////////////////////////////
+  @override
+  bool get isSignedIn => native.currentUser != null;
 
-  // shared setUserId method
-  String? userId;
+  @override
+  String? get currentUserId => native.currentUser?.uid;
 
-  List<String> get userPath => [FireIds.user, userId ?? ""];
+  // ── Auth ─────────────────────────────────────────────────
 
-  ///////////////////////////////////////////////////
-  // Abstract Methods
-  //////////////////////////////////////////////////
-  Future<void> init();
+  @override
+  Future<String?> sendOtp({
+    required String destination,
+    required bool isEmail,
+  }) async {
+    if (isEmail) {
+      AppLogger.warning(
+        'Firebase email OTP is not implemented in this starter.',
+        tag: 'FirebaseService',
+      );
+      return null;
+    }
 
-  // Auth
-  Future<void> verifyPhoneNative({
-    required String phoneNumber,
-    required void Function(String verificationId) onCodeSent,
-    required void Function(String userId) onAutoVerified,
-    required void Function(String failedMessage) onVerificationFailed,
-  });
+    final completer = Completer<String?>();
 
-  Future<String?> verifyOtpMobile(String otp, String verificationId);
+    await native.verifyPhone(
+      phone: destination,
+      codeSent: (verificationId, forceResendingToken) {
+        if (!completer.isCompleted) completer.complete(verificationId);
+      },
+      verificationFailed: (error) {
+        if (!completer.isCompleted) completer.completeError(error);
+      },
+      codeAutoRetrievalTimeout: (verificationId) {
+        if (!completer.isCompleted) completer.complete(verificationId);
+      },
+    );
 
-  // Future<String?> signInWithPhoneWeb(String phone);
+    return completer.future;
+  }
 
-  bool get isSignedIn;
+  @override
+  Future<String?> verifyOtp({
+    required String otp,
+    required String verificationId,
+  }) async {
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+      final result = await native.signInWithCredential(credential);
+      return result.user?.uid;
+    } catch (e) {
+      return null;
+    }
+  }
 
-  @mustCallSuper
+  @override
+  Future<String?> signInWithGoogle() async {
+    try {
+      final result = await native.signInWithGoogle();
+      return result?.user?.uid;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> signInWithApple() async {
+    try {
+      final result = await native.signInWithApple();
+      return result.user?.uid;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
   Future<void> signOut() async {
-    userId = null;
+    await native.signOut();
   }
 
-  Future<Map<String, dynamic>?> getDoc(List<String> keys);
+  // ── Storage ──────────────────────────────────────────────
 
-  Future<String> addDoc(List<String> keys, Map<String, dynamic> json,
-      {String documentId});
+  @override
+  Future<String?> uploadFile(String localPath, String remotePath) async {
+    try {
+      return await native.uploadFile(localPath, remotePath);
+    } catch (e) {
+      return null;
+    }
+  }
 
-  Future<void> updateDoc(List<String> keys, Map<String, dynamic> json);
-
-  Future<void> upsertDoc(List<String> keys, Map<String, dynamic> json);
-
-  Future<void> deleteDoc(List<String> keys);
-
-  Future<List<Map<String, dynamic>>?> getCollection(List<String> keys);
-
-  Future<List<Map<String, dynamic>>?> getCollectionWhere(
-    List<String> keys,
-    Object field, {
-    Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-  });
-
-  Future<int?> getCount(List<String> keys);
-
-  Future<int?> getCountWhere(
-    List<String> keys,
-    Object field, {
-    Object? isEqualTo,
-    Object? isNotEqualTo,
-    Object? isLessThan,
-    Object? isLessThanOrEqualTo,
-    Object? isGreaterThan,
-    Object? isGreaterThanOrEqualTo,
-    Object? arrayContains,
-    List<Object?>? arrayContainsAny,
-    List<Object?>? whereIn,
-    List<Object?>? whereNotIn,
-    bool? isNull,
-  });
-
-  Future<String?> uploadFile(String filePath, String uploadPath);
-
-  Future<bool> deleteFile(String url);
-
-  Future<String?> signInWithGoogle();
+  @override
+  Future<bool> deleteFile(String remotePath) async {
+    try {
+      await native.deleteFile(remotePath);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
