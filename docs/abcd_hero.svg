@@ -1,0 +1,82 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">ABCD Architecture Flutter hero diagram</title>
+<desc id="desc">A clean, Material Design hero diagram for ABCD Architecture showing Display, Command, API, and Bloc working together.</desc>
+<defs>
+  <filter id="material_shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <!-- Google Material Card Shadow -->
+    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#3C4043" flood-opacity="0.3"/>
+    <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#3C4043" flood-opacity="0.15"/>
+  </filter>
+  
+  <style>
+    .title { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 700; fill: #202124; letter-spacing: -1px; }
+    .subtitle { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 400; fill: #5F6368; }
+    .label { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 500; fill: #202124; }
+    .small { font-family: Roboto, Arial, sans-serif; font-weight: 400; fill: #5F6368; }
+    .letter { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 500; fill: #FFFFFF; }
+  </style>
+</defs>
+
+<rect width="1280" height="720" fill="#F8F9FA"/>
+
+<!-- Top Texts -->
+<text x="640" y="130" text-anchor="middle" class="title" font-size="52">ABCD Architecture for Flutter</text>
+<text x="640" y="175" text-anchor="middle" class="subtitle" font-size="24">A simple, backend-agnostic way to ship MVPs without creating messy code.</text>
+
+<!-- Connection Lines -->
+<g fill="none" stroke="#BDC1C6" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 8">
+  <path d="M215 440 C 215 370, 460 390, 460 360" />
+  <path d="M500 440 C 500 370, 580 390, 580 360" />
+  <path d="M785 440 C 785 370, 700 390, 700 360" />
+  <path d="M1070 440 C 1070 370, 820 390, 820 360" />
+</g>
+
+<!-- Central Box -->
+<g filter="url(#material_shadow)">
+  <rect x="420" y="240" width="440" height="120" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <text x="640" y="294" text-anchor="middle" class="label" font-size="26">One feature. Four clear homes.</text>
+  <text x="640" y="326" text-anchor="middle" class="small" font-size="18">No guessing where code belongs.</text>
+</g>
+
+<!-- Layer Cards -->
+<!-- A: API -->
+<g filter="url(#material_shadow)">
+  <rect x="90" y="440" width="250" height="190" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="142" cy="484" r="22" fill="#4285F4"/>
+  <text x="142" y="492" text-anchor="middle" class="letter" font-size="22">A</text>
+  <text x="176" y="492" class="label" font-size="24">API</text>
+  <text x="120" y="540" class="small" font-size="16">Backends, SDKs, auth,</text>
+  <text x="120" y="564" class="small" font-size="16">storage, ads, purchases.</text>
+</g>
+
+<!-- B: Bloc -->
+<g filter="url(#material_shadow)">
+  <rect x="375" y="440" width="250" height="190" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="427" cy="484" r="22" fill="#EA4335"/>
+  <text x="427" y="492" text-anchor="middle" class="letter" font-size="22">B</text>
+  <text x="461" y="492" class="label" font-size="24">Bloc</text>
+  <text x="405" y="540" class="small" font-size="16">State that screens watch</text>
+  <text x="405" y="564" class="small" font-size="16">and rebuild from.</text>
+</g>
+
+<!-- C: Command -->
+<g filter="url(#material_shadow)">
+  <rect x="660" y="440" width="250" height="190" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="712" cy="484" r="22" fill="#34A853"/>
+  <text x="712" y="492" text-anchor="middle" class="letter" font-size="22">C</text>
+  <text x="746" y="492" class="label" font-size="24">Command</text>
+  <text x="690" y="540" class="small" font-size="16">User actions, workflows,</text>
+  <text x="690" y="564" class="small" font-size="16">validation, side effects.</text>
+</g>
+
+<!-- D: Display -->
+<g filter="url(#material_shadow)">
+  <rect x="945" y="440" width="250" height="190" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="997" cy="484" r="22" fill="#FBBC04"/>
+  <text x="997" y="492" text-anchor="middle" class="letter" font-size="22">D</text>
+  <text x="1031" y="492" class="label" font-size="24">Display</text>
+  <text x="975" y="540" class="small" font-size="16">Screens render state</text>
+  <text x="975" y="564" class="small" font-size="16">and call commands.</text>
+</g>
+
+</svg>

@@ -1,0 +1,94 @@
+<svg width="1280" height="560" viewBox="0 0 1280 560" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">ABCD runtime data flow</title>
+<desc id="desc">ABCD Architecture runtime flow showing user action from Display to Command to API and Bloc, then back to Display in Material Design.</desc>
+<defs>
+  <filter id="material_shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+    <!-- Google Material Card Shadow -->
+    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#3C4043" flood-opacity="0.3"/>
+    <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#3C4043" flood-opacity="0.15"/>
+  </filter>
+  <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M2 2L10 6L2 10" stroke="#5F6368" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <marker id="arrow_dashed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M2 2L10 6L2 10" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+  <style>
+    .title { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 700; fill: #202124; letter-spacing: -1px; }
+    .text { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 400; fill: #5F6368; }
+    .label { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 500; fill: #202124; }
+    .hint { font-family: Roboto, Arial, sans-serif; font-weight: 400; fill: #5F6368; }
+    .letter { font-family: 'Google Sans', Roboto, Arial, sans-serif; font-weight: 500; fill: #FFFFFF; }
+  </style>
+</defs>
+
+<rect width="1280" height="560" fill="#F8F9FA"/>
+
+<text x="640" y="70" text-anchor="middle" class="title" font-size="42">How ABCD moves data</text>
+<text x="640" y="108" text-anchor="middle" class="text" font-size="20">Display stays clean. Command owns the workflow. API and Bloc stay focused.</text>
+
+<!-- User action box -->
+<g filter="url(#material_shadow)">
+  <rect x="80" y="205" width="210" height="130" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <text x="185" y="252" text-anchor="middle" class="label" font-size="22">User action</text>
+  <text x="185" y="286" text-anchor="middle" class="hint" font-size="16">Tap, submit, login, buy,</text>
+  <text x="185" y="309" text-anchor="middle" class="hint" font-size="16">upload, delete</text>
+</g>
+
+<!-- Display box -->
+<g filter="url(#material_shadow)">
+  <rect x="350" y="185" width="230" height="170" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="465" cy="235" r="22" fill="#FBBC04"/>
+  <text x="465" y="243" text-anchor="middle" class="letter" font-size="22">D</text>
+  <text x="465" y="284" text-anchor="middle" class="label" font-size="24">Display</text>
+  <text x="465" y="315" text-anchor="middle" class="hint" font-size="16">Render state</text>
+  <text x="465" y="337" text-anchor="middle" class="hint" font-size="16">Call commands only</text>
+</g>
+
+<!-- Command box -->
+<g filter="url(#material_shadow)">
+  <rect x="655" y="155" width="270" height="230" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="790" cy="206" r="22" fill="#34A853"/>
+  <text x="790" y="214" text-anchor="middle" class="letter" font-size="22">C</text>
+  <text x="790" y="258" text-anchor="middle" class="label" font-size="24">Command</text>
+  <text x="790" y="292" text-anchor="middle" class="hint" font-size="16">Validate input</text>
+  <text x="790" y="318" text-anchor="middle" class="hint" font-size="16">Call API</text>
+  <text x="790" y="344" text-anchor="middle" class="hint" font-size="16">Update Bloc</text>
+</g>
+
+<!-- API box -->
+<g filter="url(#material_shadow)">
+  <rect x="1000" y="95" width="210" height="130" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="1105" cy="138" r="22" fill="#4285F4"/>
+  <text x="1105" y="146" text-anchor="middle" class="letter" font-size="22">A</text>
+  <text x="1105" y="181" text-anchor="middle" class="label" font-size="22">API</text>
+  <text x="1105" y="208" text-anchor="middle" class="hint" font-size="15">Backend boundary</text>
+</g>
+
+<!-- Bloc box -->
+<g filter="url(#material_shadow)">
+  <rect x="1000" y="315" width="210" height="130" rx="12" fill="#FFFFFF" stroke="#DADCE0" stroke-width="1"/>
+  <circle cx="1105" cy="358" r="22" fill="#EA4335"/>
+  <text x="1105" y="366" text-anchor="middle" class="letter" font-size="22">B</text>
+  <text x="1105" y="401" text-anchor="middle" class="label" font-size="22">Bloc</text>
+  <text x="1105" y="428" text-anchor="middle" class="hint" font-size="15">App state</text>
+</g>
+
+<!-- Paths -->
+<path d="M290 270H345" stroke="#5F6368" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M580 270H650" stroke="#5F6368" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<!-- API arrow -->
+<path d="M925 240C972 226 997 195 1020 170" stroke="#5F6368" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<!-- API return arrow dashed -->
+<path d="M1000 170C960 184 941 209 924 233" stroke="#9AA0A6" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 8" marker-end="url(#arrow_dashed)"/>
+<!-- Bloc arrow -->
+<path d="M925 314C968 325 991 353 1020 380" stroke="#5F6368" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+<!-- Display rebuilds from Bloc state -->
+<path d="M1000 380C845 470 611 456 493 356" stroke="#5F6368" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+<text x="322" y="247" text-anchor="middle" class="hint" font-size="14">calls</text>
+<text x="615" y="247" text-anchor="middle" class="hint" font-size="14">runs</text>
+<text x="970" y="220" text-anchor="middle" class="hint" font-size="14">persist</text>
+<text x="980" y="346" text-anchor="middle" class="hint" font-size="14">mutate</text>
+<text x="726" y="466" text-anchor="middle" class="hint" font-size="15">Display rebuilds from Bloc state</text>
+</svg>

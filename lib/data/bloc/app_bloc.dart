@@ -1,70 +1,49 @@
-import '../../constants.dart';
-import '../api/firebase/firebase_service.dart';
-import '../api/hive/hive_service.dart';
-import '../api/hive/service_extension.dart';
-import '../data/user/user.dart';
-import '../utils/time_utils.dart';
-import 'abstract.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AppBloc extends AbstractBloc {
-  static const kVersion = kAppVersion;
+import '../api/providers.dart';
+import '../data/app/app_state.dart';
 
-  AppBloc(this._firebase, this._hive);
+final appBlocProvider = NotifierProvider<AppBloc, AppState>(AppBloc.new);
 
-  // State
-  final FirebaseService _firebase;
-  final HiveService _hive;
+class AppBloc extends Notifier<AppState> {
+  static const _onboardingKey = 'app_onboarding_complete';
+  static const _themeKey = 'app_theme_mode'; // 'light', 'dark', 'system'
 
-  void reset() {
-    // on reset create a new guest user
-    currentUser = UserData(
-      id: "guest",
-      name: "Guest",
-      createdAt: TimeUtils.nowMillis,
-      updatedAt: TimeUtils.nowMillis,
+  @override
+  AppState build() {
+    // Read initial state synchronously from cache if possible
+    final localStorage = ref.read(localStorageProvider);
+    final isOnboardingComplete = localStorage.getBool(_onboardingKey) ?? false;
+
+    final themeStr = localStorage.getString(_themeKey);
+    ThemeMode themeMode = ThemeMode.system;
+    if (themeStr == 'light') themeMode = ThemeMode.light;
+    if (themeStr == 'dark') themeMode = ThemeMode.dark;
+
+    return AppState(
+      hasBootstrapped: false,
+      isOnboardingComplete: isOnboardingComplete,
+      themeMode: themeMode,
     );
-
-    // reset library and hive stuff
-    _hive.reset();
   }
 
-  /// Startup
-  // to be used to bootstrap the app
-  bool _hasBootstrapped = false;
-
-  bool get hasBootstrapped => _hasBootstrapped;
-
-  set hasBootstrapped(bool value) => notify(() => _hasBootstrapped = value);
-
-  /// Auth
-  // Current User
-  late UserData _currentUser = _hive.getSavedUserData ??
-      UserData(
-        id: "guest",
-        name: "Guest",
-        phone: '',
-        createdAt: TimeUtils.nowMillis,
-        updatedAt: TimeUtils.nowMillis,
-      );
-
-  UserData get currentUser => _currentUser;
-
-  set currentUser(UserData currentUser) {
-    notify(() => _currentUser = currentUser);
+  void markBootstrapped() {
+    state = state.copyWith(hasBootstrapped: true);
   }
 
-  bool get isFirebaseSignedIn => _firebase.isSignedIn;
+  Future<void> markOnboardingComplete() async {
+    state = state.copyWith(isOnboardingComplete: true);
+    await ref.read(localStorageProvider).setBool(_onboardingKey, true);
+  }
 
-  bool get isGuestUser => currentUser.id == "guest";
-
-  bool get isAuthenticated => isFirebaseSignedIn && !isGuestUser;
-
-  bool get isShowOnboarding => _hive.getIsShowOnboarding();
-
-  String get currentUserId => currentUser.id;
-
-  Future<void> save() async {
-    final user = currentUser;
-    await _hive.saveUser(user);
+  Future<void> setThemeMode(ThemeMode mode) async {
+    state = state.copyWith(themeMode: mode);
+    final str = mode == ThemeMode.light
+        ? 'light'
+        : mode == ThemeMode.dark
+        ? 'dark'
+        : 'system';
+    await ref.read(localStorageProvider).setString(_themeKey, str);
   }
 }

@@ -1,91 +1,41 @@
-import 'dart:ui';
-
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'data/api/firebase/analytics_repository.dart';
+import 'app/router/router.dart';
+import 'app/theme/app_theme.dart';
+import 'data/api/services/crashlytics_service.dart';
 import 'data/bloc/app_bloc.dart';
-import 'data/command/app/bootstrap_commands.dart';
-import 'data/command/commands.dart';
-import 'screens/home.dart';
-import 'screens/onboarding/get_started_screen.dart';
-import 'theme.dart';
+import 'data/command/app/bootstrap_command.dart';
 
 void main() async {
-  await BootstrapCommand().init();
+  WidgetsFlutterBinding.ensureInitialized();
 
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+  // Run the bootstrap sequence (inits storage, api, auth, and container).
+  // If Firebase is selected, it is initialized inside this command.
+  final container = await BootstrapCommand.execute();
 
-  // MobileAds.instance.initialize();
+  // Configure global handlers after bootstrap so Crashlytics is available
+  // when Firebase was selected, and AppLogger is used otherwise.
+  CrashlyticsService.setupErrorHandlers();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        // App Bloc - handle global app state
-        ChangeNotifierProvider.value(value: BaseAppCommand.blocApp),
-
-        // Purchase Bloc - handle in-app purchases
-        ChangeNotifierProvider.value(value: BaseAppCommand.purchase),
-
-        // Other Blocs -- test
-        ChangeNotifierProvider.value(value: BaseAppCommand.blocOther),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return DynamicColorBuilder(
-      builder: (lightColorScheme, darkColorScheme) {
-        return MaterialApp(
-          navigatorObservers: [
-            AnalyticsRepository.observer,
-          ],
-          debugShowCheckedModeBanner: false,
-          title: 'ABCD Architecture Flutter',
-          theme: AppTheme.lightTheme(lightColorScheme),
-          darkTheme: AppTheme.darkTheme(darkColorScheme),
-          home: const _AppBootstrapper(),
-        );
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(appBlocProvider.select((s) => s.themeMode));
+
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'ABCD Architecture',
+      themeMode: themeMode,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      routerConfig: router,
     );
-  }
-}
-
-class _AppBootstrapper extends StatelessWidget {
-  const _AppBootstrapper();
-
-  @override
-  Widget build(BuildContext context) {
-    final isAuthenticated =
-        context.select<AppBloc, bool>((bloc) => bloc.isAuthenticated);
-
-    // Handle if guest user is onboarded
-    // final isOnboardingCompleted =
-    // context.select((AppBloc bloc) => bloc.selectedBookId != null);
-    //
-    // if (isOnboardingCompleted) return const HomeScreen();
-    //
-    // if (isAuthenticated) {
-    //   return const SelectBookOnboarding();
-    // }
-
-    if (isAuthenticated) return const HomeScreen();
-
-    return const GetStartedScreen();
   }
 }
